@@ -57,9 +57,14 @@ The `JavascriptClient` project is an example client application written in JavaS
    ```
    cd JavascriptClient
    ```
-
-3. Open the `index.html` file in your web browser.
-
+3. Install required dependencies:
+   ```
+   npm install
+   ```
+3. Run the application:
+   ```
+   npm start
+   ```
 4. The client application will connect to the `OrderService` SignalR hub and display real-time updates.
 
 ### FlutterClient
