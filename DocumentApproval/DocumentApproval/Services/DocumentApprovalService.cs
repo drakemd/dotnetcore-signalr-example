@@ -32,7 +32,7 @@ namespace DocumentApproval.Services
             return document;
         }
 
-        public void CreateDocumentApproval(SignalDto signalDto, string workflowInstanceId, string firstApprover)
+        public void CreateDocumentApproval(Signal signalDto, string workflowInstanceId, string firstApprover)
         {
             List<Persistence.Models.DocumentApproval> documentApprovals = new List<Persistence.Models.DocumentApproval>();
 

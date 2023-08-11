@@ -24,7 +24,7 @@ namespace DocumentApproval.Activities
         protected override IActivityExecutionResult OnExecute(ActivityExecutionContext context)
         {
             var stringVal = JsonConvert.SerializeObject(context.Input);
-            var myType = JsonConvert.DeserializeObject<SignalDto>(stringVal);
+            var myType = JsonConvert.DeserializeObject<Signal>(stringVal);
 
             context.WorkflowExecutionContext.SetVariable("nextApprover", RoleLevel.Manager1);
             _documentApprovalService.CreateDocumentApproval

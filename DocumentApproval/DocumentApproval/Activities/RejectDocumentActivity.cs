@@ -5,6 +5,7 @@ using Elsa.Attributes;
 using Elsa.ActivityResults;
 using Elsa.Services.Models;
 using Newtonsoft.Json;
+using DocumentApproval.Common;
 
 namespace DocumentApproval.Activities
 {
@@ -23,14 +24,14 @@ namespace DocumentApproval.Activities
         protected override IActivityExecutionResult OnExecute(ActivityExecutionContext context)
         {
             var stringVal = JsonConvert.SerializeObject(context.Input);
-            var signal = JsonConvert.DeserializeObject<SignalDto>(stringVal);
+            var signal = JsonConvert.DeserializeObject<Signal>(stringVal);
 
             var document = _documentApprovalService.GetDocumentApprovalByWorkflowInstanceId(context.WorkflowInstance.Id);
 
             if (signal.Role != document.ApproverRole)
             {
                 _logger.LogWarning($"Permission Error");
-                context.WorkflowExecutionContext.SetVariable("RejectionResult", "PermissionError");
+                context.WorkflowExecutionContext.SetVariable("ApprovalResult", ApprovalResult.PermissionError);
                 return Done();
             };
 
@@ -39,7 +40,7 @@ namespace DocumentApproval.Activities
             document.LastUpdatedDate = DateTime.Now;
 
             _documentApprovalService.UpdateDocumentApproval(document);
-            context.WorkflowExecutionContext.SetVariable("RejectionResult", "Rejected");
+            context.WorkflowExecutionContext.SetVariable("ApprovalResult", ApprovalResult.Rejected);
 
             // TODO: publish event workflow rejected
             _logger.LogWarning($"rejected document with id: {document.DocumentId}");

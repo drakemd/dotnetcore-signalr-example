@@ -5,8 +5,10 @@ namespace DocumentApproval.Services
 {
     public interface IWorkflowService
     {
-        public Task<IEnumerable<CollectedWorkflow>> StartWorkflow(SignalDto signalDto);
-        public Task<IEnumerable<CollectedWorkflow>> ApproveWorkflow(SignalDto signalDto);
-        public Task<IEnumerable<CollectedWorkflow>> RejectWorkflow(SignalDto signalDto);
+        public Task<IEnumerable<CollectedWorkflow>> StartWorkflow(Signal signalDto);
+        public Task<SignalResult> ApproveWorkflow(Signal signalDto);
+        public Task<SignalResult> RejectWorkflow(Signal signalDto);
+        public Task CreateWorkflow(Signal signalDto);
+        public Task RunConsoleWorkflow(Signal signalDto);
     }
 }

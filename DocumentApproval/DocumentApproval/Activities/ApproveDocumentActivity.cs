@@ -6,6 +6,7 @@ using DocumentApproval.Services;
 using DocumentApproval.Dtos;
 using Newtonsoft.Json;
 using Elsa;
+using DocumentApproval.Common;
 
 namespace DocumentApproval.Activities
 {
@@ -24,14 +25,14 @@ namespace DocumentApproval.Activities
         protected override IActivityExecutionResult OnExecute(ActivityExecutionContext context)
         {
             var stringVal = JsonConvert.SerializeObject(context.Input);
-            var signal = JsonConvert.DeserializeObject<SignalDto>(stringVal);
+            var signal = JsonConvert.DeserializeObject<Signal>(stringVal);
 
             var nextApprover = context.WorkflowExecutionContext.GetVariable<string>("nextApprover");
             var document =_documentApprovalService.GetDocumentApprovalByWorkflowInstanceId(context.WorkflowInstance.Id);
 
             if (signal.Role != document.ApproverRole) {
                 _logger.LogWarning($"Permission Error");
-                context.WorkflowExecutionContext.SetVariable("ApprovalResult", "PermissionError");
+                context.WorkflowExecutionContext.SetVariable("ApprovalResult", ApprovalResult.PermissionError);
                 return Done();
             };
 
@@ -40,7 +41,7 @@ namespace DocumentApproval.Activities
             document.LastUpdatedDate = DateTime.Now;
 
             _documentApprovalService.UpdateDocumentApproval(document);
-            context.WorkflowExecutionContext.SetVariable("ApprovalResult", "Approved");
+            context.WorkflowExecutionContext.SetVariable("ApprovalResult", ApprovalResult.Approved);
 
             // TODO: publish event workflow approved
             _logger.LogWarning($"approved document with id: {document.DocumentId}");
